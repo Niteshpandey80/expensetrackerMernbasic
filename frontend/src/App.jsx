@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import axios from 'axios'
 
@@ -9,8 +9,21 @@ const App = () => {
   const [date , setDate] = useState("")
   
   const  fetchExpense = ()=>{
-    axios.get("http://localhost:3000/expense").then(res => set)
+    axios.get("http://localhost:3000/expense").then(res => setExpense(res.data)).catch(err=>console.log(err))
   } 
+  useEffect(()=>{
+     fetchExpense();
+  },[])
+  const addExpense = ()=>{
+    if( !title || !amount || !date) return alert("Fill all fields !") ;
+    axios.post("http://localhost:3000/expense" ,{title , amount , date}).then(
+      res=>{
+        setExpense([...expense , res.data])
+        setTitle("") ; setAmount("") ;  setDate("") ; 
+      }
+    ).catch(err => console.error(err));
+  }
+
 
   return (
     <div className='min-h-screen bg-gray-900 text-white flex flex-col items-center '>
@@ -20,9 +33,17 @@ const App = () => {
           className='w-full p-2 mb-2 rounded bg-gray-700 outline-none ' />
           <input type="text" placeholder='Amount' value={amount} onChange={(e)=>setAmount(e.target.value)} className='w-full p-2 mb-2 rounded bg-gray-700 outline-none' />
           <input type="Date" value={date} onChange={(e)=>setDate(e.target.value)} className='w-full bg-gray-700 p-2 rounded-lg outline-none '/>
-           <button className='w-full bg-blue-500 h-10 rounded mt-4 hover:bg-blue-600 active:scale-95 transition'>Add Expanse</button>
+           <button onClick={addExpense} className='w-full bg-blue-500 h-10 rounded mt-4 hover:bg-blue-600 active:scale-95 transition'>Add Expanse</button>
       </div>
-      <div className='w-96'></div>
+      <div className='w-96 mt-4'>
+        {expense.map(exp => (
+          <div key={exp._id} className="bg-gray-800 p-3 rounded mb-2">
+            <h3>{exp.title}</h3>
+            <p>Amount: ${exp.amount}</p>
+            <p>Date: {exp.date}</p>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

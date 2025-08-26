@@ -19,6 +19,12 @@ app.get('/expense' , async(req,res)=>{
     const expense = await Expense.find();
     res.json(expense)
 })
+app.post('/expense' ,async(req,res)=>{
+   const {title , amount , date} = req.body ;
+   const newExpense = new Expense({title, amount , date});
+   await newExpense.save();
+   res.json(newExpense);
+})
 
 
 app.listen(3000 , ()=>{
