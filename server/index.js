@@ -25,7 +25,15 @@ app.post('/expense' ,async(req,res)=>{
    await newExpense.save();
    res.json(newExpense);
 })
-
+app.delete('/expense/:id' , async(req,res)=>{
+    try{
+        const{id} = req.params ; 
+        await Expense.findByIdAndDelete(id);
+        res.json({message:"Expense deleted succefully"}); 
+    }catch(err){
+        res.status(500).json({error:"Failed to delete expense"});
+    }
+})
 
 app.listen(3000 , ()=>{
     console.log("It is Running in the Port ")

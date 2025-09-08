@@ -22,9 +22,16 @@ const App = () => {
         setTitle("") ; setAmount("") ;  setDate("") ; 
       }
     ).catch(err => console.error(err));
-  }
+  } 
+  const deleteExpense =(id)=>{
+    axios.delete(`http://localhost:3000/expense/${id}`)
+    .then(()=>{
+      setExpense(expense.filter(exp =>exp._id!=id)) ; 
 
-
+    })
+     .catch(err=>console.error(err))
+    }
+  
   return (
     <div className='min-h-screen bg-gray-900 text-white flex flex-col items-center '>
       <h1 className='text-xl font-bold  mt-22 '>Expense Tracker </h1>
@@ -41,6 +48,7 @@ const App = () => {
             <h3>{exp.title}</h3>
             <p>Amount: ${exp.amount}</p>
             <p>Date: {exp.date}</p>
+            <button onClick={()=> deleteExpense(exp._id)} className='bg-red-500 p-0.5 ml-70'>Delete</button>
           </div>
         ))}
       </div>
